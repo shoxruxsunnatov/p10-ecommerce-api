@@ -11,7 +11,8 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
+    id = serializers.models.BigAutoField()
+    
     class Meta:
         model = Category
         fields = '__all__'
