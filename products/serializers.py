@@ -1,33 +1,12 @@
 from rest_framework import serializers
 
-from products.models import Product, Category
+from products.models import Product
 
 
 class ProductListSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Product
-        fields = ['id', 'title', 'slug']
+    id = serializers.IntegerField(read_only=True)
 
-
-class CategorySerializer(serializers.ModelSerializer):
-    id = serializers.models.BigAutoField()
-    
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
-class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'title', 'slug']
-
-
-class ProductDetailSerializer(ProductSerializer):
-    category = CategorySerializer()
-
-    class Meta:
-        model = Product
-        fields = ['id', 'title', 'price', 'slug', 'category']
+        fields = ["id", "title", "slug", "category"]
