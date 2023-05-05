@@ -31,6 +31,9 @@ class ProductListCreateView(APIView):
 
 
 class ProductDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    
     def get_object(self, pk):
         return get_object_or_404(Product, pk=pk)
 
@@ -55,4 +58,8 @@ class ProductDetailView(APIView):
         category = self.get_object(pk)
         category.delete()
         return Response("Deleted.", status=status.HTTP_204_NO_CONTENT)
+
+
+
+
 

@@ -29,6 +29,9 @@ class CategoryListCreateView(APIView):
 
 
 class CategoryDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+
     def get_object(self, pk):
         return get_object_or_404(Category, pk=pk)
 
