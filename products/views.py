@@ -1,65 +1,54 @@
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
 
 from products.models import Product
-from products.serializers import ProductListSerializer
+from products.serializers import ProductListSerializer, ProductCreateSerializer
 
 
+class ProductListCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
 
-class ProductListCreateView(APIView):
-    permission_classes = [IsAuthenticated]
+    # serializer_class = ProductListSerializer
 
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return ProductCreateSerializer
+        return ProductListSerializer
 
-    def get(self, request):
-        prodcuts = Product.objects.order_by("-id")
-        serializer = ProductListSerializer(prodcuts, many=True)
-        return Response(serializer.data)
-
-
-    def post(self, request):
-
-        serializer = ProductListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 
-
-class ProductDetailView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    
-    def get_object(self, pk):
-        return get_object_or_404(Product, pk=pk)
-
-
-    def get(self, request, *args, **kwargs):
-        pk = kwargs.get("pk")
-        serializer = ProductListSerializer(self.get_object(pk))
-        return Response(serializer.data)
+# class ProductListView(generics.ListAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#
+# class ProductCreateView(generics.CreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
 
-    def put(self, request, *args, **kwargs):
-        pk = kwargs.get("pk")
-        serializer = ProductListSerializer(instance=self.get_object(pk), data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ProductRetrieveView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerializer
 
 
-    def delete(self, request, *args, **kwargs):
-        pk = kwargs.get("pk")
-        category = self.get_object(pk)
-        category.delete()
-        return Response("Deleted.", status=status.HTTP_204_NO_CONTENT)
+class ProductUpdateView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductCreateSerializer
 
 
+class ProductDeleteView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
 
 
+class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    # serializer_class = ProductListSerializer
+    lookup_field = "slug"
 
+    def get_serializer_class(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return ProductCreateSerializer
+        return ProductListSerializer
