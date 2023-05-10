@@ -14,20 +14,6 @@ class ProductListCreateView(generics.ListCreateAPIView):
             return ProductCreateSerializer
         return ProductListSerializer
 
-    # def list(self, request, *args, **kwargs):
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
-
-
-# class ProductListView(generics.ListAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-#
-# class ProductCreateView(generics.CreateAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-
 
 class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
@@ -45,7 +31,6 @@ class ProductDeleteView(generics.DestroyAPIView):
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
-    # serializer_class = ProductListSerializer
     lookup_field = "slug"
 
     def get_serializer_class(self):

@@ -8,16 +8,13 @@ from common.models import Category
 from common.serializers import CategorySerializer
 
 
-
 class CategoryListCreateView(APIView):
     permission_classes = [IsAuthenticated]
-
 
     def get(self, request):
         categories = Category.objects.order_by("position")
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
-
 
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
@@ -27,20 +24,14 @@ class CategoryListCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class CategoryDetailView(APIView):
-    permission_classes = [IsAuthenticated]
-
-
     def get_object(self, pk):
         return get_object_or_404(Category, pk=pk)
-
 
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         serializer = CategorySerializer(self.get_object(pk))
         return Response(serializer.data)
-
 
     def put(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
@@ -50,10 +41,8 @@ class CategoryDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def delete(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         category = self.get_object(pk)
         category.delete()
         return Response("Deleted.", status=status.HTTP_204_NO_CONTENT)
-
